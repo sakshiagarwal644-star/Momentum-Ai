@@ -19,8 +19,8 @@ export default function Features() {
     },
     {
       icon: Scissors,
-      title: 'AI Video Editing',
-      description: 'Automatically edits your videos to perfection',
+      title: 'Auto Editing Instructions',
+      description: 'Step-by-step editing guides tailored to you',
     },
     {
       icon: Download,

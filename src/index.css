@@ -30,45 +30,4 @@
   .gradient-subtle {
     background: linear-gradient(135deg, #F6F9F8 0%, #FFCFAE 100%);
   }
-
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out;
-  }
-
-  .animate-slide-left {
-    animation: slideLeft 0.5s ease-out;
-  }
-
-  .animate-bounce-slow {
-    animation: bounceSlow 2s infinite;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideLeft {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes bounceSlow {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
 }

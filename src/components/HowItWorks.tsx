@@ -11,7 +11,7 @@ export default function HowItWorks() {
     {
       icon: Sparkles,
       title: 'Create',
-      description: 'Generates scripts, talking points, thumbnails, and automatically edits your videos.',
+      description: 'Generates scripts, talking points, thumbnails, and editing instructions.',
       gradient: 'from-[#FFCFAE] to-[#F7E6FF]',
     },
     {
