@@ -1,8 +1,10 @@
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
@@ -31,7 +33,10 @@ export default function Navbar() {
             <a href="#login" className="text-[#545454] hover:text-[#1A1A1A] transition-colors">
               Login
             </a>
-            <button className="px-6 py-2.5 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#8fc7b5] transition-all shadow-pastel">
+            <button
+              onClick={() => navigate('/start-trial')}
+              className="px-6 py-2.5 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#8fc7b5] transition-all shadow-pastel"
+            >
               Start Free Trial
             </button>
           </div>
@@ -61,7 +66,10 @@ export default function Navbar() {
             <a href="#login" className="block text-[#545454] hover:text-[#1A1A1A] transition-colors">
               Login
             </a>
-            <button className="w-full px-6 py-2.5 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#8fc7b5] transition-all shadow-pastel">
+            <button
+              onClick={() => navigate('/start-trial')}
+              className="w-full px-6 py-2.5 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#8fc7b5] transition-all shadow-pastel"
+            >
               Start Free Trial
             </button>
           </div>
