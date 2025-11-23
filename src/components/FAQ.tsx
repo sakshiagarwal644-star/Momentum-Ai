@@ -11,7 +11,7 @@ export default function FAQ() {
     },
     {
       question: 'Do I need editing skills?',
-      answer: 'No editing skills required! MomentumAI provides step-by-step editing instructions and export-ready content. You can follow along easily, even if you\'re new to content creation.',
+      answer: 'No editing skills required! MomentumAI automatically edits your videos and delivers final, upload-ready content. The AI handles all the editing work for you.',
     },
     {
       question: 'What niches are supported?',
@@ -23,7 +23,7 @@ export default function FAQ() {
     },
     {
       question: 'Can I export my scripts and ideas?',
-      answer: 'Yes! All scripts, content ideas, shooting tips, and editing guides can be exported in multiple formats. Download everything you need and use it however works best for your workflow.',
+      answer: 'Yes! All scripts, content ideas, shooting tips, and final edited videos can be exported in multiple formats. Download everything you need and use it however works best for your workflow.',
     },
   ];
 

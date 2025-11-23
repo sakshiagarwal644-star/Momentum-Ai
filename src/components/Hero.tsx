@@ -1,6 +1,9 @@
 import { Play } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Hero() {
+  const navigate = useNavigate();
+
   return (
     <section className="min-h-screen pt-32 pb-20 px-6 lg:px-8 bg-[#F6F9F8]">
       <div className="max-w-7xl mx-auto">
@@ -15,7 +18,10 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="px-8 py-4 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-2xl hover:bg-[#8fc7b5] transition-all shadow-pastel-lg text-lg">
+              <button
+                onClick={() => navigate('/start-trial')}
+                className="px-8 py-4 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-2xl hover:bg-[#8fc7b5] transition-all shadow-pastel-lg text-lg"
+              >
                 Start Free Trial
               </button>
               <button className="px-8 py-4 border-2 border-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-2xl hover:bg-[#A4D8C8]/10 transition-all text-lg flex items-center justify-center gap-2">
