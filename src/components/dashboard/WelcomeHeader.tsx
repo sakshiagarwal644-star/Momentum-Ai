@@ -12,7 +12,7 @@ export default function WelcomeHeader() {
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
       <div>
         <h1 className="text-3xl lg:text-4xl font-extrabold text-[#1A1A1A] mb-2">
-          Hello, @yourhandle
+          Hello, @usename
         </h1>
         <p className="text-[#545454] text-lg">
           Here's your content workspace for today.
