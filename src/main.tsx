@@ -6,6 +6,8 @@ import StartFreeTrial from './pages/StartFreeTrial.tsx';
 import Signup from './pages/Signup.tsx';
 import Onboarding from './pages/Onboarding.tsx';
 import Dashboard from './pages/Dashboard.tsx';
+import Login from './pages/Login.tsx';
+import ForgotPassword from './pages/ForgotPassword.tsx';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
@@ -17,6 +19,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/signup" element={<Signup />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

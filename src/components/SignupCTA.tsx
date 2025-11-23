@@ -17,12 +17,12 @@ export default function SignupCTA() {
           >
             Sign Up for Free Trial
           </button>
-          <a
-            href="#login"
+          <button
+            onClick={() => navigate('/login')}
             className="text-[#1A1A1A] font-medium hover:underline"
           >
             Already have an account? Login
-          </a>
+          </button>
         </div>
       </div>
     </section>

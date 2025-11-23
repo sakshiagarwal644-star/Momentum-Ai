@@ -30,9 +30,12 @@ export default function Navbar() {
             <a href="#faq" className="text-[#545454] hover:text-[#1A1A1A] transition-colors">
               FAQ
             </a>
-            <a href="#login" className="text-[#545454] hover:text-[#1A1A1A] transition-colors">
+            <button
+              onClick={() => navigate('/login')}
+              className="text-[#545454] hover:text-[#1A1A1A] transition-colors"
+            >
               Login
-            </a>
+            </button>
             <button
               onClick={() => navigate('/start-trial')}
               className="px-6 py-2.5 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#8fc7b5] transition-all shadow-pastel"
@@ -63,9 +66,12 @@ export default function Navbar() {
             <a href="#faq" className="block text-[#545454] hover:text-[#1A1A1A] transition-colors">
               FAQ
             </a>
-            <a href="#login" className="block text-[#545454] hover:text-[#1A1A1A] transition-colors">
+            <button
+              onClick={() => navigate('/login')}
+              className="block text-[#545454] hover:text-[#1A1A1A] transition-colors w-full text-left"
+            >
               Login
-            </a>
+            </button>
             <button
               onClick={() => navigate('/start-trial')}
               className="w-full px-6 py-2.5 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#8fc7b5] transition-all shadow-pastel"
