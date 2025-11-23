@@ -7,7 +7,8 @@ export default function ProfileSidebar() {
         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#A4D8C8] to-[#B4C7E7] flex items-center justify-center mb-4">
           <User size={40} className="text-white" strokeWidth={2} />
         </div>
-        <h3 className="text-xl font-extrabold text-[#1A1A1A] mb-1">@yourhandle</h3>
+        <h3 className="text-xl font-extrabold text-[#1A1A1A] mb-1">@username
+        </h3>
         <p className="text-sm text-[#545454] mb-4">Fitness Coach</p>
       </div>
 
