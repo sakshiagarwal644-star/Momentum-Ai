@@ -1,18 +1,39 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, ArrowLeft } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const isFormValid = email.trim() !== '' && email.includes('@');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid) {
+    if (!isFormValid) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
       setSubmitted(true);
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -78,22 +99,28 @@ export default function ForgotPassword() {
                   type="email"
                   placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-[#F6F9F8] border border-[#A4D8C8]/30 rounded-xl focus:outline-none focus:border-[#A4D8C8] transition-colors"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError('');
+                  }}
+                  className={`w-full pl-12 pr-4 py-3.5 bg-[#F6F9F8] border ${
+                    error ? 'border-red-300' : 'border-[#A4D8C8]/30'
+                  } rounded-xl focus:outline-none focus:border-[#A4D8C8] transition-colors`}
                 />
               </div>
+              {error && <p className="text-red-400 text-sm mt-2 ml-1">{error}</p>}
             </div>
 
             <button
               type="submit"
-              disabled={!isFormValid}
+              disabled={!isFormValid || loading}
               className={`w-full py-4 font-semibold rounded-xl transition-all shadow-pastel ${
-                isFormValid
+                isFormValid && !loading
                   ? 'bg-[#A4D8C8] text-[#1A1A1A] hover:bg-[#8fc7b5]'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
-              Send Reset Instructions
+              {loading ? 'Sending...' : 'Send Reset Instructions'}
             </button>
           </form>
         </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, AtSign } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function Signup() {
     handle: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -33,10 +35,37 @@ export default function Signup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      navigate('/onboarding', { state: formData });
+    if (!validateForm()) return;
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            handle: formData.handle,
+          },
+        },
+      });
+
+      if (error) {
+        setErrors({ email: error.message });
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        navigate('/onboarding', { state: formData });
+      }
+    } catch (err) {
+      setErrors({ email: 'An error occurred. Please try again.' });
+      setLoading(false);
     }
   };
 
@@ -143,9 +172,14 @@ export default function Signup() {
 
             <button
               type="submit"
-              className="w-full py-4 bg-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#8fc7b5] transition-all shadow-pastel mt-6"
+              disabled={loading}
+              className={`w-full py-4 font-semibold rounded-xl transition-all shadow-pastel mt-6 ${
+                loading
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-[#A4D8C8] text-[#1A1A1A] hover:bg-[#8fc7b5]'
+              }`}
             >
-              Create Account
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
 
             <p className="text-xs text-[#545454] text-center mt-4">
@@ -163,6 +197,17 @@ export default function Signup() {
 
             <button
               type="button"
+              onClick={async () => {
+                const { error } = await supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                  options: {
+                    redirectTo: `${window.location.origin}/onboarding`,
+                  },
+                });
+                if (error) {
+                  setErrors({ email: 'Failed to sign in with Google. Please try again.' });
+                }
+              }}
               className="w-full py-3.5 bg-white border-2 border-[#A4D8C8] text-[#1A1A1A] font-semibold rounded-xl hover:bg-[#A4D8C8]/10 transition-all flex items-center justify-center gap-2"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -183,7 +228,7 @@ export default function Signup() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Login with Google
+              Sign up with Google
             </button>
           </form>
 

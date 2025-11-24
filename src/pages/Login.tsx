@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,23 +11,51 @@ export default function Login() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const isFormValid = formData.email.trim() !== '' && formData.password.trim() !== '';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
-    if (!formData.email.includes('@')) {
-      setError('Incorrect email or password. Please try again.');
-      return;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        setError('Incorrect email or password. Please try again.');
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+      setLoading(false);
     }
-
-    navigate('/dashboard');
   };
 
-  const handleGoogleLogin = () => {
-    navigate('/dashboard');
+  const handleGoogleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) {
+        setError('Failed to sign in with Google. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -126,14 +155,14 @@ export default function Login() {
 
               <button
                 type="submit"
-                disabled={!isFormValid}
+                disabled={!isFormValid || loading}
                 className={`w-full py-4 font-semibold rounded-xl transition-all shadow-pastel mt-6 ${
-                  isFormValid
+                  isFormValid && !loading
                     ? 'bg-[#A4D8C8] text-[#1A1A1A] hover:bg-[#8fc7b5]'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
-                Login
+                {loading ? 'Logging in...' : 'Login'}
               </button>
 
               <div className="relative my-6">
