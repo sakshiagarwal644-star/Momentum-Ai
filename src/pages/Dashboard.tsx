@@ -5,6 +5,7 @@ import QuickActions from '../components/dashboard/QuickActions';
 import AISuggestionsPanel from '../components/dashboard/AISuggestionsPanel';
 import WeeklyCalendarStrip from '../components/dashboard/WeeklyCalendarStrip';
 import RecentContent from '../components/dashboard/RecentContent';
+import RecentIdeas from '../components/dashboard/RecentIdeas';
 import UploadClips from '../components/dashboard/UploadClips';
 import ProfileSidebar from '../components/dashboard/ProfileSidebar';
 import DashboardFooter from '../components/dashboard/DashboardFooter';
@@ -23,6 +24,7 @@ export default function Dashboard() {
               <QuickActions />
               <AISuggestionsPanel />
               <WeeklyCalendarStrip />
+              <RecentIdeas />
               <RecentContent />
               <UploadClips />
               <DashboardFooter />
