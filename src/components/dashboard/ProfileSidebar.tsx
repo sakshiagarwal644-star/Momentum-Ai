@@ -1,15 +1,58 @@
+import { useState, useEffect } from 'react';
 import { User, Users, Calendar } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
 
 export default function ProfileSidebar() {
+  const [profile, setProfile] = useState({
+    handle: '',
+    niche: '',
+    followers: 0,
+  });
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('instagram_handle, coaching_niche, follower_count')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (profileData) {
+          setProfile({
+            handle: profileData.instagram_handle || 'your-handle',
+            niche: profileData.coaching_niche || 'Content Creator',
+            followers: profileData.follower_count || 0,
+          });
+        }
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const formatFollowers = (count: number) => {
+    if (count >= 1000000) {
+      return `${(count / 1000000).toFixed(1)}M`;
+    }
+    if (count >= 1000) {
+      return `${(count / 1000).toFixed(1)}K`;
+    }
+    return count.toString();
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-pastel border border-[#A4D8C8]/20 p-6">
       <div className="flex flex-col items-center text-center mb-6">
         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#A4D8C8] to-[#B4C7E7] flex items-center justify-center mb-4">
           <User size={40} className="text-white" strokeWidth={2} />
         </div>
-        <h3 className="text-xl font-extrabold text-[#1A1A1A] mb-1">@username
+        <h3 className="text-xl font-extrabold text-[#1A1A1A] mb-1">
+          @{profile.handle}
         </h3>
-        <p className="text-sm text-[#545454] mb-4">Fitness Coach</p>
+        <p className="text-sm text-[#545454] mb-4">{profile.niche}</p>
       </div>
 
       <div className="space-y-4">
@@ -18,7 +61,9 @@ export default function ProfileSidebar() {
             <Users size={20} className="text-[#A4D8C8]" />
             <span className="text-sm font-semibold text-[#1A1A1A]">Followers</span>
           </div>
-          <p className="text-2xl font-extrabold text-[#1A1A1A]">12.4K</p>
+          <p className="text-2xl font-extrabold text-[#1A1A1A]">
+            {formatFollowers(profile.followers)}
+          </p>
         </div>
 
         <div className="p-4 bg-[#F6F9F8] rounded-xl">
