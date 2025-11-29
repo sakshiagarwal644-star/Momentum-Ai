@@ -1,13 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Lightbulb, FileText, Video, Calendar, TrendingUp } from 'lucide-react';
 import IdeaGeneratorModal from './IdeaGeneratorModal';
+import {
+  getIdeasCountThisWeek,
+  getScriptsCount,
+  getRawClipsCount,
+  getScheduledPostsCount,
+  getConsistencyScore,
+} from '../../lib/dashboardStats';
 
 export default function SummaryTiles() {
   const [isIdeaModalOpen, setIsIdeaModalOpen] = useState(false);
-  const [ideasCount, setIdeasCount] = useState(12);
+  const [ideasCount, setIdeasCount] = useState(0);
+  const [scriptsCount, setScriptsCount] = useState(0);
+  const [clipsCount, setClipsCount] = useState(0);
+  const [postsCount, setPostsCount] = useState(0);
+  const [consistencyScore, setConsistencyScore] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchStats = async () => {
+    setIsLoading(true);
+    const [ideas, scripts, clips, posts, consistency] = await Promise.all([
+      getIdeasCountThisWeek(),
+      getScriptsCount(),
+      getRawClipsCount(),
+      getScheduledPostsCount(),
+      getConsistencyScore(),
+    ]);
+
+    setIdeasCount(ideas);
+    setScriptsCount(scripts);
+    setClipsCount(clips);
+    setPostsCount(posts);
+    setConsistencyScore(consistency);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const handleIdeaSaved = () => {
-    setIdeasCount(prev => prev + 1);
+    fetchStats();
   };
 
   const tiles = [
@@ -23,7 +57,7 @@ export default function SummaryTiles() {
     {
       title: 'Scripts Created',
       subtitle: 'Ready to Use',
-      value: '8',
+      value: scriptsCount.toString(),
       icon: FileText,
       action: 'Create Script',
       gradient: 'from-[#FFCFAE] to-[#F7E6FF]',
@@ -31,7 +65,7 @@ export default function SummaryTiles() {
     {
       title: 'Raw Clips',
       subtitle: 'Awaiting Edit',
-      value: '5',
+      value: clipsCount.toString(),
       icon: Video,
       action: 'Upload Clips',
       gradient: 'from-[#B4C7E7] to-[#F7E6FF]',
@@ -39,7 +73,7 @@ export default function SummaryTiles() {
     {
       title: 'Scheduled Posts',
       subtitle: 'Next 7 Days',
-      value: '14',
+      value: postsCount.toString(),
       icon: Calendar,
       action: 'View Calendar',
       gradient: 'from-[#F7E6FF] to-[#FFCFAE]',
@@ -47,12 +81,12 @@ export default function SummaryTiles() {
     {
       title: 'Consistency Score',
       subtitle: 'Weekly Average',
-      value: '87%',
+      value: `${consistencyScore}%`,
       icon: TrendingUp,
       action: 'View Insights',
       gradient: 'from-[#A4D8C8] to-[#FFCFAE]',
       showProgress: true,
-      progress: 87,
+      progress: consistencyScore,
     },
   ];
 

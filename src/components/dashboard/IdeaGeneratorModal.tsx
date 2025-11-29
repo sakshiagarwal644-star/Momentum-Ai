@@ -14,17 +14,18 @@ interface IdeaGeneratorModalProps {
 }
 
 export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: IdeaGeneratorModalProps) {
-  const [keyword, setKeyword] = useState('');
+  const [topic, setTopic] = useState('');
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [savingId, setSavingId] = useState<number | null>(null);
   const [savedIds, setSavedIds] = useState<Set<number>>(new Set());
+  const [showToast, setShowToast] = useState(false);
 
   if (!isOpen) return null;
 
   const handleGenerate = async () => {
-    if (!keyword.trim()) return;
+    if (!topic.trim()) return;
 
     setIsGenerating(true);
     setError('');
@@ -46,7 +47,7 @@ export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: Ide
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ keyword: keyword.trim() }),
+        body: JSON.stringify({ keyword: topic.trim() }),
       });
 
       if (!response.ok) {
@@ -84,7 +85,7 @@ export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: Ide
         .from('ideas')
         .insert({
           user_id: user.id,
-          keyword: keyword.trim(),
+          topic: topic.trim(),
           idea_text: idea.idea,
         });
 
@@ -93,6 +94,8 @@ export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: Ide
       }
 
       setSavedIds(prev => new Set(prev).add(idea.id));
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
       onIdeaSaved();
     } catch (err) {
       console.error('Error saving idea:', err);
@@ -103,10 +106,11 @@ export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: Ide
   };
 
   const handleClose = () => {
-    setKeyword('');
+    setTopic('');
     setIdeas([]);
     setError('');
     setSavedIds(new Set());
+    setShowToast(false);
     onClose();
   };
 
@@ -132,15 +136,15 @@ export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: Ide
           <div className="mb-6">
             <input
               type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
               placeholder="Enter topic, niche, or keyword…"
               className="w-full px-4 py-3 border-2 border-[#A4D8C8]/30 rounded-xl focus:outline-none focus:border-[#A4D8C8] transition-colors text-[#1A1A1A]"
               onKeyPress={(e) => e.key === 'Enter' && handleGenerate()}
             />
             <button
               onClick={handleGenerate}
-              disabled={!keyword.trim() || isGenerating}
+              disabled={!topic.trim() || isGenerating}
               className="w-full mt-4 py-3 bg-gradient-to-r from-[#A4D8C8] to-[#B4C7E7] text-white font-semibold rounded-xl hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isGenerating ? (
@@ -177,7 +181,7 @@ export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: Ide
                     <div className="flex-1">
                       <p className="text-[#1A1A1A] mb-2">{idea.idea}</p>
                       <span className="inline-block px-3 py-1 bg-[#A4D8C8]/20 text-[#1A1A1A] text-xs font-semibold rounded-full">
-                        {keyword}
+                        {topic}
                       </span>
                     </div>
                     <button
@@ -209,14 +213,20 @@ export default function IdeaGeneratorModal({ isOpen, onClose, onIdeaSaved }: Ide
             </div>
           )}
 
-          {!isGenerating && ideas.length === 0 && keyword && (
+          {!isGenerating && ideas.length === 0 && topic && (
             <div className="text-center py-12 text-[#545454]">
               <Sparkles size={48} className="mx-auto mb-4 text-[#A4D8C8]" />
-              <p>Enter a keyword and click Generate Ideas to get started!</p>
+              <p>Enter a topic and click Generate Ideas to get started!</p>
             </div>
           )}
         </div>
       </div>
+
+      {showToast && (
+        <div className="fixed bottom-8 right-8 bg-[#A4D8C8] text-white px-6 py-3 rounded-xl shadow-lg animate-fade-in-up z-50">
+          <p className="font-semibold">Idea saved!</p>
+        </div>
+      )}
     </div>
   );
 }

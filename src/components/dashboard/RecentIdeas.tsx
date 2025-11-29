@@ -4,12 +4,16 @@ import { supabase } from '../../lib/supabase';
 
 interface Idea {
   id: string;
-  keyword: string;
+  topic: string;
   idea_text: string;
   created_at: string;
 }
 
-export default function RecentIdeas() {
+interface RecentIdeasProps {
+  refreshTrigger?: number;
+}
+
+export default function RecentIdeas({ refreshTrigger }: RecentIdeasProps = {}) {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,7 +45,7 @@ export default function RecentIdeas() {
 
   useEffect(() => {
     fetchIdeas();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleDelete = async (ideaId: string) => {
     try {
@@ -123,7 +127,7 @@ export default function RecentIdeas() {
                 <p className="text-[#1A1A1A] mb-2 text-sm leading-relaxed">{idea.idea_text}</p>
                 <div className="flex items-center gap-3">
                   <span className="inline-block px-3 py-1 bg-[#A4D8C8]/20 text-[#1A1A1A] text-xs font-semibold rounded-full">
-                    {idea.keyword}
+                    {idea.topic}
                   </span>
                   <span className="text-xs text-[#545454]">
                     {formatDate(idea.created_at)}
